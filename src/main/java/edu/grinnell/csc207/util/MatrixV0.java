@@ -352,7 +352,14 @@ public class MatrixV0<T> implements Matrix<T> {
    */
   public void fillLine(int startRow, int startCol, int deltaRow, int deltaCol,
       int endRow, int endCol, T val) {
-    //
+    int curRow = startRow;
+    int curCol = startCol;
+
+    while(curRow != endRow && curCol != endCol){
+      this.set(curRow,curCol,val);
+      curRow = curRow + deltaRow;
+      curCol = curCol + deltaCol;
+    }
   } // fillLine(int, int, int, int, int, int, T)
 
   /**
@@ -362,8 +369,15 @@ public class MatrixV0<T> implements Matrix<T> {
    *
    * @return a copy of the matrix.
    */
+ 
   public Matrix clone() {
-    return this;        // STUB
+    Matrix<T> copyMatrix = new MatrixV0(height(), width(), null);
+    for (int h = 0; h < this.height(); h++){
+      for (int w = 0; w < this.width(); w++){
+        copyMatrix.set(h,w,this.get(h,w));
+      }
+    }
+    return copyMatrix;
   } // clone()
 
   /**
@@ -378,12 +392,27 @@ public class MatrixV0<T> implements Matrix<T> {
   public boolean equals(Object other) {
     if (other instanceof Matrix) {
       Matrix otherMatrix = (Matrix) other;
-      // Compare appropriate fields and elements.
+      if (this.height() != otherMatrix.height() || this.width() != otherMatrix.width()){
+        return false;
+      }
+      for (int h = 0; h < this.height(); h++){
+        for (int w = 0; w < this.width(); w++){
+          T val1 = this.get(h,w);
+          T val2 = (T) otherMatrix.get(h,w);
+          if (val1 == null){
+            if (val2 != null){
+              return false;
+            }
+          } else if (!val1.equals(val2)){
+            return false;
+          }
+        }
+      }
+      return true;
     } else {
       // If it's not a matrix, it's not equal.
       return false;
-    } //
-    return this == other;       
+    } //     
   } // equals(Object)
 
   /**
