@@ -22,6 +22,7 @@ public class MatrixV0<T> implements Matrix<T> {
   /**the height of the matrix. */
   int height;
 
+  T defaultVal;
   // +--------------+------------------------------------------------
   // | Constructors |
   // +--------------+
@@ -43,6 +44,7 @@ public class MatrixV0<T> implements Matrix<T> {
   public MatrixV0(int width, int height, T def) {
     this.width = width;
     this.height = height;
+    this.defaultVal = def;
     this.matrix = (T[][]) new Object[height][width];
 
     for(int h = 0; h < height; h++){
@@ -211,7 +213,7 @@ public class MatrixV0<T> implements Matrix<T> {
         if (w < col){
           matrixCopy[h][w] = this.matrix[h][w];
         } else if (w == col){
-          matrixCopy[h][w] = null;
+          matrixCopy[h][w] = defaultVal;
         } else {
           matrixCopy[h][w] = this.matrix[h][w -1];
         }
@@ -287,13 +289,13 @@ public class MatrixV0<T> implements Matrix<T> {
     if (col < 0 || col >= this.width){
       throw new IndexOutOfBoundsException();
     }
-    T[][]matrixCopy = (T[][]) new Object[this.height - 1][width];
-    for(int h = 0; h < this.width; h++){
-      for (int w = 0; w < matrixCopy[h].length; w++){
+    T[][]matrixCopy = (T[][]) new Object[this.height][this.width - 1];
+    for(int h = 0; h < this.height; h++){
+      for (int w = 0; w < this.width; w++){
         if (w < col){
           matrixCopy[h][w] = this.matrix[h][w];
-        } else{
-          matrixCopy[h][w] = this.matrix[h][w + 1];
+        } else if (w > col){
+          matrixCopy[h][w - 1] = this.matrix[h][w];
         }
       }
     }
@@ -320,8 +322,8 @@ public class MatrixV0<T> implements Matrix<T> {
    */
   public void fillRegion(int startRow, int startCol, int endRow, int endCol,
       T val) {
-    for (int h = startRow; h < startRow + endRow; h++){
-      for (int w = startCol; w < startCol + endCol; w++){
+    for (int h = startRow; h < endRow; h++){
+      for (int w = startCol; w < endCol; w++){
         if (h >= 0 && h < this.height && w >= 0 && w < this.width){
           this.matrix[h][w] = val;
         }
